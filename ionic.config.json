@@ -1,0 +1,7 @@
+{
+  "name": "Multiplo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

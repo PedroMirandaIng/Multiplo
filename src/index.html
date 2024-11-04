@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Multiplos App</title>
+  <script type="text/javascript">    
+    //Creado por: Pedro Miranda, email: pedromirandaing@gmail.com
+    //Función funMultiplo(num) que recibe un parámetro de tipo númerico y devuelve los números del 0 al número ingresado
+    //Despliega en pantalla los Múltiplos de 3 (en color "Verde"), los Múltiplos de 5 (en color "Rojo")
+    //Despliega los Múltiplos de 7 (en color "Azul"), y despliega "sin color" los números que no tienen Múltiplo
+    function funMultiplo(num) {    
+        //Inicialización de Variables 
+        let vHTML = ""; 
+        let vResult = "";    
+        let element = document.getElementById('MultiploDIV');  
+        element.innerHTML = "";
+        //If que verifica que la entrada sea un dato númerico, que no sea nulo
+        //Verifica que sea un número positivo, que sea un número "entero", y que no esté vacio
+        if (num === null || isNaN(parseInt(num) ) || parseInt(num) < 0 || num % 1 != 0 || num.trim() == "") {    
+          alert("Escribir un número válido");  
+        }
+        else 
+        {
+          //Ciclo For que va desde el 0 al número ingresado, iterando de uno en uno
+            for (let numero = 0; numero <= parseInt(num); numero++) 
+            {        
+                if(numero == 0) //Si el número es 0
+                {
+                    //Agregar encabezado de tabla HTML
+                    vHTML = '<table class="table" border = "1" cellpadding = "2" cellspacing = "2" style = "font-family: Arial; font-size: 16px; font-weight: bold;"> <tr style="text-align: center; background-color: #54555a; color: #FFFFFF "> <td> &nbsp;Números&nbsp; </td> </tr> <tr> <td style = "text-align: center;"> ' + numero + ' </td></tr>'
+                    vResult = '' + numero //Variable para concatenar resultado final
+                }
+                else if ((numero % 3)==0) //Se utiliza "módulo%" para verificar si el número es divisible entre 3
+                {
+                    //Concatenar resultado de variable "vHTML", para pintar elementos en la página
+                    //Si número es múltiplo de 3 pinta de "Verde"
+                    vHTML = vHTML + '<tr> <td style = "text-align: center; background-color: green;"> ' + numero + ' </td>'
+                    vResult = vResult + '-' + numero  
+                  }
+                else if ((numero % 5)==0)
+                {
+                     //Si número es múltiplo de 5 pinta de "Rojo" 
+                    vHTML = vHTML + '<tr> <td style = "text-align: center; background-color: red;"> ' + numero + ' </td>'
+                    vResult = vResult + '-' + numero
+                }
+                else if ((numero % 7)==0) {
+                    //Si número es múltiplo de 7 pinta de "Azul" 
+                    vHTML = vHTML + '<tr> <td style = "text-align: center; background-color: blue;"> ' + numero + ' </td>'
+                    vResult = vResult + '-' + numero
+                }
+                else {
+                  //Si número "NO" es múltiplo de 3,5,7 mo pinta elemento                    
+                    vHTML = vHTML + '<tr> <td style = "text-align: center; "> ' + numero + ' </td>'
+                    vResult = vResult + '-' + numero
+                }
+                //Cuando el recorrido del ciclo "For" llega al último elemento se coloca el resultado
+                //Con los respectivos colores: Verde Rojo o Azul
+                if(numero == parseInt(num)){
+                    vHTML = vHTML + '</table>';  
+                    vResult = vResult + '';
+                    if (element === null) {                      
+                    } else {                                                                
+                        element.innerHTML += vHTML; //Se agrega códio html a DIV "MultiploDIV"
+                        document.getElementById("Result").value = vResult;
+                    }
+                    
+                }  //Fin de If último eemento         
+            } // Fin de Ciclo For
+        } //Fin de else que verifica número
+        return vResult; //Retorna resultado para posteriormente enviarlo a FireBase
+    }
+    </script>
+
+
+  <base href="/" />
+
+  <meta name="color-scheme" content="light dark" />
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+
+  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+</head>
+
+<body>
+  <app-root></app-root>
+  
+  <div style = "position: absolute; top: 10%; left:37%">
+    <form id = "submitData" name = "submitData" onsubmit="return false" >
+    <table>
+      <tr><td style="text-align: center; font-weight: bold; height: 50px;"><label>Ingresar un número:</label></td> <br/></tr>
+      <tr>        
+        <td style="text-align: center;">
+          <input type="number" id="IMultiplo" name ="IMultiplo" /> 
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center; height: 80px;">
+          <button type="submit" class = "btn btn-info" >Multiplos</button> 
+        </td>
+      </tr>  
+      <tr>
+        <td style="text-align: center; padding: 0 80px;">      
+        <input type="text" style= "display: none" id="Result" name ="Result" /> 
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <div style = "overflow-x: hidden; overflow-y: auto; height: 370px; width: 250px;" id="MultiploDIV"></div>      
+        </td>
+      </tr>
+    </table>
+  </form>
+  </div>  
+</body>
+
+<script type="module">
+  //Módulo para inicializar Firebase 
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, set, push, child } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBzKd-FmcrqraDbYvmhMjLkh5GhoDnaZMQ",
+    authDomain: "multiplo357.firebaseapp.com",
+    projectId: "multiplo357",
+    storageBucket: "multiplo357.firebasestorage.app",
+    messagingSenderId: "121482097163",
+    appId: "1:121482097163:web:6132c07d02131482764d0e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  //"addEventListener" para responder al evento "submit" del Formulario
+  submitData.addEventListener('submit', (e) => {
+
+      let numero = document.getElementById('IMultiplo').value;  
+      let resultado = document.getElementById('Result').value;  
+
+      const id = push(child(ref(database), 'numero')).key; //Identificador aleatorio de Firebase
+      const vReturnResult = funMultiplo(numero); 
+      if(vReturnResult.trim() == ""){        
+      }
+      else {
+          //Código para Insertar datos en Firebase
+          set(ref(database, 'multiplos/' + id), { 
+            numero: numero,
+            resultado: vReturnResult //se ejecuta la función funMultiplo(numero) y al mismo tiempo se Inserta el valor de retorno en Firebase
+          }).then(() => { //En caso de éxito Insert
+            alert("Datos guardados en FireBase");
+          })
+          .catch((error) => { //error de inserción
+            alert(error);
+          });
+      }
+
+  });
+
+</script>
+
+</html>
